@@ -1,0 +1,33 @@
+const express = require("express");
+const dotenv = require("dotenv");
+const connectDB = require("./src/config/db");
+const userRoute = require("./src/users/userRoute");
+const productRoute = require("./src/products/productRoute");
+const cors = require('cors');
+const path = require("path");
+
+
+dotenv.config();
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+connectDB();
+
+// user route
+app.use("/api/v1/users/", userRoute);
+app.use("/api/v1/products/", productRoute);
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+
+app.get("/", (req, res) => res.send(
+"app is running successfully"));
+
+app.use((req, res) => {
+    res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`);
+});
+
+
+const PORT = process.env.PORT || 5050;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
