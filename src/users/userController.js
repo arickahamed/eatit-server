@@ -115,6 +115,48 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+exports.confirmOrders = async (req, res) => {
+    try {
+        const { email, cartItems, total } = req.body;
+
+        if (!email || !cartItems || !total) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields"
+            });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.orders.push({
+            items: cartItems,
+            total,
+            createdAt: new Date()
+        });
+
+        await user.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Order placed successfully",
+            order: user.orders[user.orders.length - 1] 
+        });
+    } catch (err) {
+        console.error("Order placement error:", err);
+        res.status(500).json({
+            success: false,
+            message: "Server error while processing order",
+            error: err.message
+        });
+    }
+}
+
 
 
 // Dont create the API for upldate users
@@ -140,6 +182,3 @@ exports.updatedUsers = async (req, res) => {
         })
     }
 };
-
-
-// login register update user delete user api complete alhamdulillah

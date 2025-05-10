@@ -24,6 +24,10 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.get("/", (req, res) => res.send(
 "app is running successfully"));
 
+app.get("/.well-known/appspecific/com.chrome.devtools.json", (req, res) => {
+    res.status(204).end(); // No content
+});
+
 app.use((req, res) => {
     res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`);
 });
