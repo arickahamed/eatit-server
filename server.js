@@ -10,8 +10,13 @@ const path = require("path");
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5050;
+const CLIENT_URL = process.env.CLIENT_URL;
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: CLIENT_URL,
+    credentials: true
+}));
 
 connectDB();
 
@@ -33,5 +38,4 @@ app.use((req, res) => {
 });
 
 
-const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
