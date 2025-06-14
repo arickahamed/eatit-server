@@ -20,5 +20,6 @@ exports.deleteUser = async (id) => {
     return users;
 }
 
-// exports.confirmOrder = async ()
-
+// exports.myOrders = async () => {
+//     await User.
+// }

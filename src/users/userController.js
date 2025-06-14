@@ -157,6 +157,42 @@ exports.confirmOrders = async (req, res) => {
     }
 }
 
+exports.myOrders = async (req, res) => {
+    try {
+        const {email} = req.query;
+        if (!email ) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields"
+            });
+        };
+
+        const user = await User.findOne({email});
+        if( !user ) {
+            return res.status(400).json({
+                success: false,
+                message: "User not found",
+            });
+        };
+
+        const myOrders = user.orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        return res.status(200).json({
+            success: true,
+            data: myOrders,
+            messageg: "My orders are here"
+        });
+
+    } catch (err) {
+        console.error("Order placement error:", err);
+        res.status(500).json({
+            success: false,
+            message: "Server error while processing my order",
+            error: err.message
+        });
+    }
+}
+
 
 
 // Dont create the API for upldate users
